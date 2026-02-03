@@ -1,1 +1,214 @@
-for omoh
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine?</title>
+<style>
+
+body {
+
+    font-family: 'Arial', sans-serif;
+
+    text-align: center;
+
+    background: #ffe6f0;
+
+    margin:0;
+
+    padding:0;
+
+    overflow-x:hidden;
+
+}
+
+h1 { color: #d63384; margin-top:50px; }
+
+.button {
+
+    background:#ff6699; border:none; color:white; padding:15px 25px; margin:10px; font-size:18px; border-radius:8px; cursor:pointer;
+
+}
+
+.button:hover { background:#ff3366; }
+
+.hidden { display:none; }
+
+.heart { font-size:50px; color:#ff3366; margin-top:20px; animation:pulse 1s infinite; }
+
+@keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
+
+#confetti { position:fixed; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:9999; }
+
+.floating-heart {
+
+    position:fixed;
+
+    font-size:24px;
+
+    animation: floatUp 5s linear infinite;
+
+    pointer-events:none;
+
+}
+
+@keyframes floatUp {
+
+    0% { transform: translateY(100vh) scale(1); opacity:1; }
+
+    100% { transform: translateY(-50px) scale(0.8); opacity:0; }
+
+}
+
+#reaction { font-size: 40px; margin-top:20px; }
+</style>
+</head>
+<body>
+<h1>Hey you ❤️</h1>
+<p>Click start to see something cute!</p>
+<button class="button" id="startBtn">Start</button>
+<div id="step1" class="hidden">
+<p>Pick your vibe:</p>
+<button class="button choice">Sweet 🍫</button>
+<button class="button choice">Funny 😂</button>
+<button class="button choice">Cute 🐶</button>
+</div>
+<div id="step2" class="hidden">
+<p>Pick a snack:</p>
+<button class="button choice">Popcorn 🍿</button>
+<button class="button choice">Chocolate 🍫</button>
+<button class="button choice">Ice Cream 🍦</button>
+</div>
+<div id="final" class="hidden">
+<h1>All that picked by you tells me…</h1>
+<h2>Will you be my Valentine? 💕</h2>
+<button class="button" id="yesBtn">Yes 💖</button>
+<button class="button" id="noBtn">No 😢</button>
+<p id="reaction"></p>
+</div>
+<canvas id="confetti"></canvas>
+<script>
+
+// Step navigation
+
+const startBtn = document.getElementById('startBtn');
+
+const step1 = document.getElementById('step1');
+
+const step2 = document.getElementById('step2');
+
+const final = document.getElementById('final');
+
+startBtn.onclick = ()=> {startBtn.classList.add('hidden'); step1.classList.remove('hidden');};
+
+document.querySelectorAll('#step1 .choice').forEach(b=>b.onclick=()=>{step1.classList.add('hidden'); step2.classList.remove('hidden');});
+
+document.querySelectorAll('#step2 .choice').forEach(b=>b.onclick=()=>{step2.classList.add('hidden'); final.classList.remove('hidden');});
+
+// Yes/No logic
+
+const yesBtn = document.getElementById('yesBtn');
+
+const noBtn = document.getElementById('noBtn');
+
+const reaction = document.getElementById('reaction');
+
+yesBtn.onclick = ()=>{
+
+    reaction.textContent = "💖 Yay! 🎉";
+
+    launchConfetti();
+
+    spawnHearts();
+
+}
+
+noBtn.onclick = ()=>{
+
+    reaction.textContent = "😢 Pick yes, please! 🥺";
+
+}
+
+// Confetti
+
+function launchConfetti(){
+
+    const canvas = document.getElementById('confetti');
+
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+
+    canvas.height = window.innerHeight;
+
+    const pieces = [];
+
+    const colors = ['#ff3366','#ff6699','#ffd6e0','#d63384','#ff99cc'];
+
+    for(let i=0;i<150;i++){
+
+        pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-50,size:Math.random()*8+2,speed:Math.random()*3+2,color:colors[Math.floor(Math.random()*colors.length)],angle:Math.random()*360});
+
+    }
+
+    function draw(){
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        pieces.forEach(p=>{
+
+            ctx.fillStyle = p.color;
+
+            ctx.beginPath();
+
+            ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+
+            ctx.fill();
+
+            p.y += p.speed;
+
+            p.x += Math.sin(p.angle*Math.PI/180);
+
+            p.angle += 1;
+
+            if(p.y>canvas.height) p.y=-10;
+
+        });
+
+        requestAnimationFrame(draw);
+
+    }
+
+    draw();
+
+}
+
+// Floating hearts
+
+function spawnHearts(){
+
+    for(let i=0;i<20;i++){
+
+        const heart = document.createElement('div');
+
+        heart.className='floating-heart';
+
+        heart.style.left = Math.random()*100 + 'vw';
+
+        heart.style.fontSize = (Math.random()*30+20)+'px';
+
+        heart.textContent = '💖';
+
+        document.body.appendChild(heart);
+
+        setTimeout(()=> heart.remove(), 5000);
+
+    }
+
+    setInterval(()=>{for(let i=0;i<5;i++){const heart = document.createElement('div'); heart.className='floating-heart'; heart.style.left = Math.random()*100 + 'vw'; heart.style.fontSize = (Math.random()*30+20)+'px'; heart.textContent = '💖'; document.body.appendChild(heart); setTimeout(()=> heart.remove(),5000);}}, 1500);
+
+}
+</script>
+</body>
+</html>
+ 
